@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aventura en la Edad Media: Al-Ándalus y Feudalismo</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #1a120b;
+            background-image: radial-gradient(#2c1e12 1px, transparent 1px), radial-gradient(#2c1e12 1px, #1a120b 1px);
+            background-size: 24px 24px;
+        }
+        .medieval-font {
+            font-family: 'Cinzel', serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #2c1e12;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #d4af37;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="text-amber-50 min-h-screen flex flex-col justify-between selection:bg-amber-500 selection:text-black">
+
+    <!-- HEADER -->
+    <header class="bg-gradient-to-r from-yellow-900 via-amber-800 to-emerald-900 border-b-4 border-amber-500 p-4 shadow-2xl text-center">
+        <h1 class="medieval-font text-2xl md:text-4xl font-extrabold tracking-wider text-amber-300 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+            🏰 AVENTURA EN LA EDAD MEDIA 🕌
+        </h1>
+        <p class="text-xs md:text-sm text-amber-100 mt-1 max-w-2xl mx-auto">
+            ¡Demuestra tus conocimientos sobre Al-Ándalus y la Sociedad Feudal para llegar al gran Castillo de la Sabiduría! Nivel: 5º de Primaria.
+        </p>
+    </header>
+
+    <!-- MAIN GAME AREA -->
+    <main class="flex-grow container mx-auto p-3 md:p-6 flex flex-col lg:flex-row gap-6 max-w-7xl">
+        
+        <!-- SECCIÓN IZQUIERDA: Tablero del Juego -->
+        <div id="board-section" class="w-full lg:w-2/3 bg-amber-950/40 border-2 border-amber-600/50 rounded-2xl p-4 flex flex-col justify-between shadow-lg backdrop-blur-sm">
+            <div>
+                <div class="flex justify-between items-center mb-4 bg-amber-900/40 p-3 rounded-xl border border-amber-500/20">
+                    <div class="flex items-center gap-3">
+                        <span id="player-avatar-display" class="text-3xl bg-amber-800/60 p-2 rounded-lg border border-amber-500/50">🛡️</span>
+                        <div>
+                            <div class="text-xs text-amber-400 font-bold uppercase tracking-wider">Aventurero</div>
+                            <div id="player-name-display" class="font-bold text-amber-200">Jugador 1</div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-xs text-amber-400 font-bold uppercase tracking-wider">Progreso</div>
+                        <div class="text-sm font-extrabold text-amber-300">Casilla <span id="current-position">1</span> / 30</div>
+                    </div>
+                </div>
+
+                <!-- Representación visual del Tablero -->
+                <div class="grid grid-cols-5 sm:grid-cols-6 gap-2 md:gap-3 p-1 max-h-[420px] overflow-y-auto custom-scrollbar" id="board-grid">
+                    <!-- Las casillas se generan dinámicamente con JavaScript -->
+                </div>
+            </div>
+
+            <!-- Panel inferior de Controles -->
+            <div class="mt-6 pt-4 border-t border-amber-500/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="text-center sm:text-left">
+                    <p id="game-status-text" class="text-amber-200 font-semibold text-sm md:text-base">¡Elige tu avatar y comienza la aventura!</p>
+                </div>
+                <button id="roll-btn" class="medieval-font w-full sm:w-auto bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 active:scale-95 text-slate-950 font-extrabold px-8 py-3 rounded-xl shadow-[0_4px_14px_rgba(217,119,6,0.5)] transition duration-200 text-lg flex items-center justify-center gap-2">
+                    🎲 Lanzar Dado
+                </button>
+            </div>
+        </div>
+
+        <!-- SECCIÓN DERECHA: Estadísticas y preguntas activas -->
+        <div class="w-full lg:w-1/3 flex flex-col gap-6">
+            <!-- Marcador y Logros -->
+            <div class="bg-gradient-to-br from-stone-900 to-stone-950 border-2 border-amber-700/60 rounded-2xl p-4 shadow-xl">
+                <h3 class="medieval-font text-amber-400 font-bold text-lg border-b border-amber-500/30 pb-2 mb-3 flex items-center gap-2">
+                    📜 Tu Pergamino de Honor
+                </h3>
+                <div class="grid grid-cols-2 gap-3 text-center mb-4">
+                    <div class="bg-amber-950/50 p-3 rounded-xl border border-amber-600/30">
+                        <span class="text-2xl">✅</span>
+                        <div class="text-xs text-amber-400 font-semibold mt-1">Aciertos</div>
+                        <div id="stats-correct" class="text-xl font-extrabold text-emerald-400">0</div>
+                    </div>
+                    <div class="bg-amber-950/50 p-3 rounded-xl border border-amber-600/30">
+                        <span class="text-2xl">❌</span>
+                        <div class="text-xs text-amber-400 font-semibold mt-1">Fallos</div>
+                        <div id="stats-incorrect" class="text-xl font-extrabold text-rose-400">0</div>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex justify-between text-xs text-amber-300">
+                        <span>Preguntas superadas:</span>
+                        <span id="stats-progress" class="font-bold">0 / 35</span>
+                    </div>
+                    <div class="w-full bg-stone-800 rounded-full h-2">
+                        <div id="stats-bar" class="bg-amber-500 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Leyenda e instrucciones rápidas -->
+            <div class="bg-gradient-to-br from-emerald-950/20 to-amber-950/20 border-2 border-emerald-900/40 rounded-2xl p-4 text-xs space-y-3">
+                <h4 class="medieval-font text-emerald-400 font-bold text-sm">💡 Reglas del Camino:</h4>
+                <p>1. Lanza el dado para avanzar entre 1 y 3 casillas.</p>
+                <p>2. En cada casilla deberás responder una pregunta histórica sobre <strong>Al-Ándalus</strong> o el <strong>Feudalismo</strong>.</p>
+                <p>3. <strong>¡Ojo con los hechizos!</strong> Acertar te otorgará bendiciones con saltos gigantes hacia adelante, pero fallar activará trampas mágicas que te enviarán hacia atrás.</p>
+                <p>4. El primer valiente en alcanzar la <strong>Casilla 30</strong> ganará el título de Gran Historiador de la Corte.</p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-stone-950 text-stone-500 text-center py-3 text-xs border-t border-stone-800">
+        Creado para el aprendizaje divertido de Historia de España en Educación Primaria • 2026
+    </footer>
+
+    <!-- MODAL 1: SELECCIÓN DE PERSONAJE (Aparece al inicio) -->
+    <div id="welcome-modal" class="fixed inset-0 bg-black/90 flex items-center justify-center p-4 z-50 overflow-y-auto">
+        <div class="bg-gradient-to-b from-amber-950 to-stone-900 border-4 border-amber-500 rounded-3xl p-6 md:p-8 max-w-lg w-full text-center shadow-2xl animate-fade-in my-8">
+            <h2 class="medieval-font text-3xl font-extrabold text-amber-300 mb-2">¡SALUDOS, VIAJERO!</h2>
+            <p class="text-amber-100 text-sm mb-6">Estamos a punto de comenzar un viaje en el tiempo hacia la Edad Media. Escoge tu personaje para esta gran aventura:</p>
+            
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <!-- Personaje 1 -->
+                <button onclick="selectCharacter('Caballero', '🛡️')" class="character-card group p-3 bg-amber-900/30 hover:bg-amber-800/60 border-2 border-amber-600/40 hover:border-amber-400 rounded-xl transition duration-150 flex flex-col items-center">
+                    <span class="text-4xl group-hover:scale-110 transition duration-150">🛡️</span>
+                    <span class="font-bold text-amber-200 mt-2 text-sm">Caballero Real</span>
+                    <span class="text-[10px] text-amber-400">Guerrero de los castillos</span>
+                </button>
+                <!-- Personaje 2 -->
+                <button onclick="selectCharacter('Princesa', '⚔️')" class="character-card group p-3 bg-amber-900/30 hover:bg-amber-800/60 border-2 border-amber-600/40 hover:border-amber-400 rounded-xl transition duration-150 flex flex-col items-center">
+                    <span class="text-4xl group-hover:scale-110 transition duration-150">⚔️</span>
+                    <span class="font-bold text-amber-200 mt-2 text-sm">Guerrera del Norte</span>
+                    <span class="text-[10px] text-amber-400">Defensora del reino</span>
+                </button>
+                <!-- Personaje 3 -->
+                <button onclick="selectCharacter('Maga', '🔮')" class="character-card group p-3 bg-emerald-950/30 hover:bg-emerald-900/60 border-2 border-emerald-600/40 hover:border-emerald-400 rounded-xl transition duration-150 flex flex-col items-center">
+                    <span class="text-4xl group-hover:scale-110 transition duration-150">🔮</span>
+                    <span class="font-bold text-amber-200 mt-2 text-sm">Alquimista</span>
+                    <span class="text-[10px] text-amber-400">Misteriosa y sabia</span>
+                </button>
+                <!-- Personaje 4 -->
+                <button onclick="selectCharacter('Sabio', '📜')" class="character-card group p-3 bg-emerald-950/30 hover:bg-emerald-900/60 border-2 border-emerald-600/40 hover:border-emerald-400 rounded-xl transition duration-150 flex flex-col items-center">
+                    <span class="text-4xl group-hover:scale-110 transition duration-150">📜</span>
+                    <span class="font-bold text-amber-200 mt-2 text-sm">Sabio Andalusí</span>
+                    <span class="text-[10px] text-amber-400">Maestro de Toledo</span>
+                </button>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-xs font-bold text-amber-400 uppercase tracking-widest mb-1">Tu Nombre de Aventurero/a:</label>
+                <input type="text" id="player-name-input" value="Galahad" class="w-full bg-stone-950 border border-amber-600 text-amber-200 font-bold px-4 py-2 rounded-xl text-center focus:outline-none focus:ring-2 focus:ring-amber-500">
+            </div>
+
+            <button onclick="startGame()" class="medieval-font w-full bg-amber-500 hover:bg-amber-600 text-stone-950 font-extrabold py-3 px-6 rounded-xl text-lg shadow-lg hover:shadow-amber-500/20 transition duration-150">
+                ¡EMPEZAR AVENTURA!
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL 2: PREGUNTA (Aparece al caer en casilla) -->
+    <div id="question-modal" class="fixed inset-0 bg-black/85 flex items-center justify-center p-4 z-40 hidden">
+        <div class="bg-gradient-to-b from-stone-900 to-stone-950 border-4 border-amber-500 rounded-3xl p-6 max-w-xl w-full shadow-2xl flex flex-col justify-between max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <div>
+                <!-- Encabezado de la pregunta -->
+                <div class="flex justify-between items-center pb-3 border-b border-amber-500/30 mb-4">
+                    <span id="question-category" class="text-xs font-bold text-amber-400 uppercase tracking-widest bg-amber-950/80 px-3 py-1 rounded-full border border-amber-500/20">Al-Ándalus</span>
+                    <span id="question-id-display" class="text-xs font-bold text-stone-400">Pregunta 1 de 35</span>
+                </div>
+
+                <!-- Enunciado de la pregunta -->
+                <h3 id="question-text" class="text-lg md:text-xl font-bold text-amber-100 mb-6 leading-relaxed">
+                    ¿Qué era una alquería en la época de Al-Ándalus?
+                </h3>
+
+                <!-- Contenedor de Opciones -->
+                <div class="space-y-3" id="options-container">
+                    <!-- Botones de opciones generados dinámicamente -->
+                </div>
+            </div>
+
+            <!-- Botón de pista y pie de pregunta -->
+            <div class="mt-6 pt-4 border-t border-amber-500/20 flex flex-col sm:flex-row justify-between items-center gap-3">
+                <button onclick="showHint()" class="text-xs text-amber-400 hover:text-amber-200 underline font-semibold flex items-center gap-1">
+                    📖 ¿Necesitas una pista?
+                </button>
+                <p id="hint-text" class="text-xs text-amber-300 italic hidden text-center sm:text-right bg-amber-950/40 p-2 rounded-lg border border-amber-600/20 max-w-xs">
+                    Esta es la pista de la pregunta...
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: FEEDBACK DE LA RESPUESTA (Acierto/Error + Efecto de movimiento) -->
+    <div id="feedback-modal" class="fixed inset-0 bg-black/90 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-gradient-to-b from-stone-900 to-stone-950 border-4 rounded-3xl p-6 md:p-8 max-w-md w-full text-center shadow-2xl" id="feedback-card">
+            <span id="feedback-icon" class="text-6xl block mb-4">✨</span>
+            <h3 id="feedback-title" class="medieval-font text-2xl font-extrabold mb-2">¡EXCELENTE TRABAJO!</h3>
+            
+            <p id="feedback-explanation" class="text-sm text-stone-300 mb-6 bg-stone-950/60 p-3 rounded-xl border border-stone-800">
+                Respuesta correcta explicada brevemente aquí.
+            </p>
+
+            <div id="feedback-reward-box" class="mb-6 p-4 rounded-xl font-bold text-sm bg-emerald-950/40 border border-emerald-500/30 text-emerald-300">
+                🎁 ¡Recompensa! El mago te regala un salto gigante y avanzas 2 casillas.
+            </div>
+
+            <button onclick="closeFeedbackAndMove()" class="medieval-font w-full bg-amber-500 hover:bg-amber-600 text-stone-950 font-extrabold py-3 px-6 rounded-xl text-md shadow-lg transition duration-150">
+                ¡Continuar Viaje!
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL 4: VICTORIA FINAL (Se llega a la casilla 30) -->
+    <div id="victory-modal" class="fixed inset-0 bg-black/95 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-gradient-to-b from-amber-900 to-amber-950 border-8 border-amber-400 rounded-3xl p-8 max-w-lg w-full text-center shadow-2xl">
+            <span class="text-7xl block mb-4 animate-bounce">👑</span>
+            <h2 class="medieval-font text-3xl md:text-4xl font-extrabold text-amber-300 mb-2 tracking-widest">¡VICTORIA ABSOLUTA!</h2>
+            <p class="text-amber-100 text-sm mb-6">¡Has cruzado todo el reino y completado la aventura medieval de forma legendaria!</p>
+            
+            <div class="bg-stone-950/60 p-4 rounded-2xl border-2 border-amber-500/40 mb-6">
+                <p class="text-xs text-amber-400 uppercase tracking-widest font-bold">Resumen de tus hazañas:</p>
+                <div class="grid grid-cols-2 gap-4 mt-2">
+                    <div>
+                        <span class="text-2xl">✅</span>
+                        <div class="text-xs text-stone-400">Preguntas Acertadas</div>
+                        <div id="final-correct" class="text-xl font-extrabold text-emerald-400">0</div>
+                    </div>
+                    <div>
+                        <span class="text-2xl">❌</span>
+                        <div class="text-xs text-stone-400">Preguntas Falladas</div>
+                        <div id="final-incorrect" class="text-xl font-extrabold text-rose-400">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="restartGame()" class="medieval-font w-full bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-stone-950 font-extrabold py-3 px-6 rounded-xl text-lg shadow-lg">
+                🔄 Jugar de Nuevo
+            </button>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT: Lógica del juego y Base de Preguntas -->
+    <script>
+        // --- BASE DE DATOS DE 35 PREGUNTAS (Nivel: 5º de primaria) ---
+        const QUESTIONS_DATABASE = [
+            // Categoria: Edad Media Inicial
+            {
+                id: 1,
+                category: "Inicio Edad Media",
+                question: "¿En qué año cayó el Imperio romano de Occidente, marcando el inicio de la Edad Media?",
+                options: [
+                    { text: "En el año 476 d.C.", isCorrect: true, rationale: "La caída del último emperador romano en el 476 d.C. marca tradicionalmente la frontera entre la Edad Antigua y la Edad Media." },
+                    { text: "En el año 711 d.C.", isCorrect: false, rationale: "El año 711 d.C. es cuando se inicia la invasión musulmana de la Península Ibérica." },
+                    { text: "En el año 1492 d.C.", isCorrect: false, rationale: "Este año marca el final de la Edad Media con el descubrimiento de América." },
+                    { text: "En el año 507 d.C.", isCorrect: false, rationale: "En el 507 es cuando los visigodos se asientan en Hispania tras la batalla de Vouillé." }
+                ],
+                hint: "Ocurrió a finales del siglo V."
+            },
+            {
+                id: 2,
+                category: "Inicio Edad Media",
+                question: "¿Qué pueblo germánico se asentó en la Península Ibérica en el año 507 y estableció su capital en Toledo?",
+                options: [
+                    { text: "Los visigodos", isCorrect: true, rationale: "Los visigodos crearon un reino independiente en la península con una corte muy unificada en Toledo." },
+                    { text: "Los vándalos", isCorrect: false, rationale: "Aunque cruzaron Hispania, terminaron cruzando al norte de África." },
+                    { text: "Los francos", isCorrect: false, rationale: "Los francos se establecieron principalmente en la actual Francia." },
+                    { text: "Los bizantinos", isCorrect: false, rationale: "Pertenecían al Imperio romano de Oriente, no eran un pueblo germánico invasor." }
+                ],
+                hint: "Su rey gobernaba desde la hermosa ciudad del Tajo (Toledo)."
+            },
+            {
+                id: 3,
+                category: "Inicio Edad Media",
+                question: "¿Cuál era la gran capital del próspero Imperio bizantino en el este de Europa?",
+                options: [
+                    { text: "Constantinopla", isCorrect: true, rationale: "Constantinopla (la antigua Bizancio, hoy Estambul) resistió siglos como puente de comercio y cultura." },
+                    { text: "Roma", isCorrect: false, rationale: "Roma fue la capital del Imperio de Occidente, que cayó en el año 476." },
+                    { text: "Toledo", isCorrect: false, rationale: "Toledo era la capital del reino peninsular de los visigodos." },
+                    { text: "Córdoba", isCorrect: false, rationale: "Córdoba se convertiría en capital de Al-Ándalus siglos después." }
+                ],
+                hint: "Su nombre hace honor al emperador Constantino el Grande."
+            },
+            {
+                id: 4,
+                category: "Inicio Edad Media",
+                question: "Al principio de la Edad Media, ¿por qué la sociedad sufrió una 'ruralización' abandonando las ciudades?",
+                options: [
+                    { text: "Porque las invasiones provocaban inseguridad y el campo era más fácil de defender", isCorrect: true, rationale: "Ante el miedo a los saqueos de los ejércitos invasores, la población buscó refugio en aldeas rurales." },
+                    { text: "Porque el aire de las ciudades estaba muy contaminado", isCorrect: false, rationale: "En el siglo V no existía la contaminación industrial que motivase ese éxodo." },
+                    { text: "Porque los reyes prohibieron vivir en las ciudades", isCorrect: false, rationale: "Los reyes no prohibieron la vida urbana; de hecho, intentaban mantener allí sus cortes." },
+                    { text: "Porque se descubrieron minas de oro gigantes en los bosques", isCorrect: false, rationale: "No hubo ningún descubrimiento masivo de oro que causara la huida al campo." }
+                ],
+                hint: "Piensa en el miedo a los ataques y saqueos constantes."
+            },
+            // Categoria: Conquista y Califato
+            {
+                id: 5,
+                category: "Al-Ándalus",
+                question: "¿En qué año un ejército musulmán cruzó el estrecho de Gibraltar y derrotó a los visigodos?",
+                options: [
+                    { text: "En el año 711 d.C.", isCorrect: true, rationale: "Las fuerzas comandadas por Tariq derrotaron al rey Rodrigo, comenzando el rápido control de la península." },
+                    { text: "En el año 476 d.C.", isCorrect: false, rationale: "Este es el año de la caída del Imperio romano." },
+                    { text: "En el año 929 d.C.", isCorrect: false, rationale: "Este es el año de la proclamación del Califato por Abderramán III." },
+                    { text: "En el año 1031 d.C.", isCorrect: false, rationale: "Este año comenzó la división de Al-Ándalus en los reinos de Taifas." }
+                ],
+                hint: "Es a principios del siglo VIII."
+            },
+            {
+                id: 6,
+                category: "Al-Ándalus",
+                question: "¿Cómo llamaron los musulmanes al territorio de la Península Ibérica que quedó bajo su dominio?",
+                options: [
+                    { text: "Al-Ándalus", isCorrect: true, rationale: "Al-Ándalus es el término histórico con el que designaron su nuevo emirato y posterior califato." },
+                    { text: "Hispania", isCorrect: false, rationale: "Hispania era el término de origen romano y cartaginés." },
+                    { text: "Reino de Toledo", isCorrect: false, rationale: "Toledo era el centro del reino visigodo que acababan de conquistar." },
+                    { text: "Bizancio", isCorrect: false, rationale: "Bizancio es el Imperio de Oriente con base en los Balcanes." }
+                ],
+                hint: "El origen de este nombre todavía da nombre a la actual Andalucía."
+            },
+            {
+                id: 7,
+                category: "Al-Ándalus",
+                question: "¿Cuál fue la época de mayor esplendor cultural, artístico y económico de Al-Ándalus?",
+                options: [
+                    { text: "El Califato de Córdoba (929-1031)", isCorrect: true, rationale: "Bajo Abderramán III y Alhakén II, Córdoba fue la metrópolis más rica, culta y avanzada de Europa." },
+                    { text: "El Reino Nazarí de Granada", isCorrect: false, rationale: "Fue el último periodo musulmán, rico artísticamente pero muy débil políticamente." },
+                    { text: "Los Reinos de Taifas", isCorrect: false, rationale: "Fue un periodo de gran debilidad por estar divididos en pequeños reinos enfrentados." },
+                    { text: "El Emirato Dependiente de Damasco", isCorrect: false, rationale: "Era una provincia periférica dominada por califas lejanos que recibía pocas inversiones." }
+                ],
+                hint: "Su líder se autoproclamó califa (líder político y religioso supremo) con sede en Córdoba."
+            },
+            {
+                id: 8,
+                category: "Sociedad Feudal",
+                question: "¿Qué sistema político, económico y social se desarrolló en los reinos cristianos occidentales durante la Edad Media?",
+                options: [
+                    { text: "El Feudalismo", isCorrect: true, rationale: "Se basaba en pactos de vasallaje donde los nobles defendían las tierras a cambio del trabajo campesino." },
+                    { text: "La Democracia directa", isCorrect: false, rationale: "No existía participación ciudadana ni elecciones libres en el medievo." },
+                    { text: "El Imperio Centralizado Romano", isCorrect: false, rationale: "Este sistema ya se había desmoronado en el siglo V." },
+                    { text: "El Capitalismo Industrial", isCorrect: false, rationale: "La industria no aparecería hasta finales del siglo XVIII." }
+                ],
+                hint: "Proviene de la palabra 'Feudo', las grandes extensiones que el rey entregaba a los señores."
+            },
+            // Categoria: La Vida en Al-Ándalus (Alquería, zoco, riego, cultivos)
+            {
+                id: 9,
+                category: "Al-Ándalus",
+                question: "¿Qué es una alquería?",
+                options: [
+                    { text: "Una pequeña casa de campo con tierras para el cultivo", isCorrect: true, rationale: "Eran pequeñas comunidades rurales andalusíes dedicadas a la producción agrícola." },
+                    { text: "Un palacio fortificado de los califas", isCorrect: false, rationale: "Los palacios fortificados eran los alcázares." },
+                    { text: "Una torre vigía construida en las fronteras", isCorrect: false, rationale: "Las torres vigías se denominaban atalayas." },
+                    { text: "Un mercado de esclavos de la ciudad", isCorrect: false, rationale: "Las alquerías se ubicaban en el campo y no eran mercados." }
+                ],
+                hint: "Yasira y Abdul viven en una de ellas para trabajar el campo."
+            },
+            {
+                id: 10,
+                category: "Al-Ándalus",
+                question: "¿Qué actividad principal se podía hacer en un zoco andalusí?",
+                options: [
+                    { text: "Comprar y vender productos agrícolas, artesanales y especias", isCorrect: true, rationale: "El zoco era el animado mercado al aire libre o cubierto ubicado en el centro de la ciudad." },
+                    { text: "Tomar baños calientes de relajación y limpieza", isCorrect: false, rationale: "Eso se hacía en los baños públicos o hammam." },
+                    { text: "Asistir a la oración los viernes al mediodía", isCorrect: false, rationale: "Las oraciones sagradas tenían lugar en la mezquita." },
+                    { text: "Entrenar tropas con espadas para la guerra", isCorrect: false, rationale: "Los mercados no se usaban para entrenamientos militares." }
+                ],
+                hint: "Es el equivalente medieval al mercado o plaza de abastos."
+            },
+            {
+                id: 11,
+                category: "Al-Ándalus",
+                question: "¿Qué ingeniosa máquina elevaría el agua de los pozos para llevarla a las acequias de riego?",
+                options: [
+                    { text: "La noria", isCorrect: true, rationale: "La noria hidráulica, movida por un animal o corriente, elevaba agua en vasijas de barro llamadas arcaduces." },
+                    { text: "El molino de viento de aspas", isCorrect: false, rationale: "El molino servía principalmente para moler grano de cereal, no para sacar agua profunda." },
+                    { text: "La catapulta de contrapeso", isCorrect: false, rationale: "La catapulta era un arma militar de asedio." },
+                    { text: "El arado romano de madera", isCorrect: false, rationale: "El arado servía para labrar y abrir surcos en la tierra." }
+                ],
+                hint: "Aprovechaba el movimiento circular y una cadena con vasijas de barro."
+            },
+            {
+                id: 12,
+                category: "Al-Ándalus",
+                question: "¿Qué cultivos introdujeron los andalusíes en la Península procedentes de Oriente?",
+                options: [
+                    { text: "Granadas, alcachofas, espárragos, algodón, lino y azafrán", isCorrect: true, rationale: "Los andalusíes revolucionaron la agricultura trayendo nuevas especies que requerían riego." },
+                    { text: "Patatas, tomates, maíz y cacao", isCorrect: false, rationale: "Estos cultivos son nativos de América y no llegaron hasta después de 1492." },
+                    { text: "Cereales tradicionales y aceitunas silvestres únicamente", isCorrect: false, rationale: "El trigo y el olivo ya se cultivaban de forma extensiva por los romanos." },
+                    { text: "Plátanos canarios, café y piñas tropicales", isCorrect: false, rationale: "Estos cultivos no se introdujeron en la agricultura peninsular de esa época." }
+                ],
+                hint: "Son hortalizas verdes, especias valiosas y fibras textiles muy valoradas."
+            },
+            {
+                id: 13,
+                category: "Al-Ándalus",
+                question: "¿Qué estructuras protegían los perímetros de las ciudades andalusíes de los ataques externos?",
+                options: [
+                    { text: "Grandes murallas con torres de defensa y puertas vigiladas", isCorrect: true, rationale: "Las murallas cerraban la medina con torres cuadradas que vigilaban los caminos." },
+                    { text: "Fosos de lava ardiente procedentes de volcanes", isCorrect: false, rationale: "No existían fosos de lava en la España medieval." },
+                    { text: "Vallas sencillas de madera fáciles de quemar", isCorrect: false, rationale: "Las ciudades ricas no se fiaban de empalizadas de madera; usaban piedra y argamasa dura." },
+                    { text: "Escudos mágicos invisibles de los hechiceros", isCorrect: false, rationale: "La defensa era física y arquitectónica, construida por canteros." }
+                ],
+                hint: "Eran murallones gruesos con almenas donde patrullaban los soldados."
+            },
+            {
+                id: 14,
+                category: "Al-Ándalus",
+                question: "¿Cómo se llamaba la zona central y más importante, rodeada por murallas, en una ciudad andalusí?",
+                options: [
+                    { text: "La medina", isCorrect: true, rationale: "En la medina se encontraban los edificios principales como la mezquita aljama y el zoco principal." },
+                    { text: "El arrabal", isCorrect: false, rationale: "El arrabal era el barrio pobre situado extramuros (fuera de las murallas)." },
+                    { text: "La judería", isCorrect: false, rationale: "La judería era el barrio específico donde vivía la comunidad judía." },
+                    { text: "El feudo", isCorrect: false, rationale: "El feudo es la tierra agrícola bajo control de un señor noble cristiano." }
+                ],
+                hint: "Es el corazón de la urbe musulmana medieval."
+            },
+            {
+                id: 15,
+                category: "Al-Ándalus",
+                question: "¿Cómo eran las calles de una ciudad de Al-Ándalus y por qué motivo se estructuraban así?",
+                options: [
+                    { text: "Estrechas y laberínticas para dar sombra y dificultar el paso a invasores", isCorrect: true, rationale: "Eran calles sinuosas muy frescas en verano y fáciles de defender si el enemigo rompía la muralla." },
+                    { text: "Anchas, rectas y diseñadas en cuadrícula perfecta", isCorrect: false, rationale: "Ese plano octogonal o en damero era romano, no andalusí." },
+                    { text: "Enormes carreteras de tres carriles para carros pesados", isCorrect: false, rationale: "No existían vehículos motorizados ni autopistas en el medievo." },
+                    { text: "Ninguna calle tenía salida y todo se comunicaba por pasajes subterráneos", isCorrect: false, rationale: "Aunque había callejones sin salida (adarves), la vida se hacía en la superficie." }
+                ],
+                hint: "Buscaban bloquear el calor asfixiante del verano y desorientar al enemigo."
+            },
+            {
+                id: 16,
+                category: "Al-Ándalus",
+                question: "¿Qué es una mezquita?",
+                options: [
+                    { text: "El edificio sagrado donde los musulmanes se reúnen a rezar", isCorrect: true, rationale: "Es el centro religioso principal, orientado hacia La Meca." },
+                    { text: "Un mercado de telas finas procedentes de China", isCorrect: false, rationale: "Las telas se vendían en la alcaicería del zoco." },
+                    { text: "La torre defensiva de la alcazaba militar", isCorrect: false, rationale: "Las torres de defensa militar eran la torre del homenaje o torres albarranas." },
+                    { text: "El cementerio de la familia real musulmana", isCorrect: false, rationale: "Aunque podían tener tumbas cerca, no era su función principal." }
+                ],
+                hint: "Es el templo equivalente a las iglesias cristianas o sinagogas judías."
+            },
+            {
+                id: 17,
+                category: "Al-Ándalus",
+                question: "¿Qué es un alcázar?",
+                options: [
+                    { text: "Un palacio fortificado que servía de residencia a los gobernantes", isCorrect: true, rationale: "Eran complejos residenciales de lujo y oficinas de administración con hermosos jardines." },
+                    { text: "La escuela donde se estudiaban medicina y astronomía", isCorrect: false, rationale: "Esa institución era la madraza o escuela superior." },
+                    { text: "La casa rústica de los campesinos del campo", isCorrect: false, rationale: "Eso se correspondía con las alquerías." },
+                    { text: "El pozo de agua que abastecía a la ciudad", isCorrect: false, rationale: "El pozo o depósito de agua era el aljibe." }
+                ],
+                hint: "En Sevilla, Segovia y Toledo aún hoy podemos visitar ejemplos impresionantes."
+            },
+            {
+                id: 18,
+                category: "Al-Ándalus",
+                question: "¿Qué eran los hammans en la vida social andalusí?",
+                options: [
+                    { text: "Los baños públicos, esenciales para la higiene y la vida social", isCorrect: true, rationale: "En ellos la gente se lavaba con agua a distintas temperaturas, charlaba y hacía negocios." },
+                    { text: "Los soldados de caballería que defendían las fronteras", isCorrect: false, rationale: "Esos caballeros de frontera eran jinetes o soldados de guarnición." },
+                    { text: "Los grandes barcos que traían papel desde Asia", isCorrect: false, rationale: "No eran barcos, sino locales urbanos." },
+                    { text: "Las leyes sagradas que dictaban los jueces", isCorrect: false, rationale: "Las leyes religiosas se basaban en el Corán." }
+                ],
+                hint: "Eran herederos directos de las termas romanas."
+            },
+            // Categoria: Legado Cultural y Avances
+            {
+                id: 19,
+                category: "Avances Culturales",
+                question: "¿Qué material revolucionario traído de Oriente impulsó de forma masiva la copia de libros y la cultura?",
+                options: [
+                    { text: "El papel", isCorrect: true, rationale: "La introducción del papel (más barato que el pergamino de piel de oveja) facilitó la creación de enormes bibliotecas." },
+                    { text: "La corteza de papiro", isCorrect: false, rationale: "El papiro era egipcio antiguo y era muy quebradizo comparado con el papel andalusí." },
+                    { text: "Las tablillas de arcilla blanda", isCorrect: false, rationale: "Eran pesadas y se usaban en Mesopotamia miles de años atrás." },
+                    { text: "Las placas de plástico flexible", isCorrect: false, rationale: "El plástico es un invento del siglo XX." }
+                ],
+                hint: "Se elaboraba machacando trapos viejos y fibras vegetales de lino o cáñamo."
+            },
+            {
+                id: 20,
+                category: "Avances Culturales",
+                question: "Muchas palabras del castellano provienen del árabe. ¿Cuál de estas comunes designa al 'gobernador de un municipio'?",
+                options: [
+                    { text: "Alcalde", isCorrect: true, rationale: "Proviene de 'al-qadi', que originalmente significaba el juez o administrador municipal." },
+                    { text: "Caballero", isCorrect: false, rationale: "Es una palabra de origen netamente latino ('caballus')." },
+                    { text: "Rey", isCorrect: false, rationale: "Deriva del latín 'rex'." },
+                    { text: "Monje", isCorrect: false, rationale: "Proviene del latín 'monachus', de raíz griega." }
+                ],
+                hint: "Comienza con el característico prefijo árabe 'al-'."
+            },
+            {
+                id: 21,
+                category: "Avances Culturales",
+                question: "¿Qué gran sistema numérico y matemático introdujeron los musulmanes en Europa sustituyendo al romano?",
+                options: [
+                    { text: "La numeración arábiga, el sistema decimal y el uso del cero", isCorrect: true, rationale: "Adoptado de la India, facilitó enormemente los cálculos complejos que con números romanos eran casi imposibles." },
+                    { text: "Los números mayas de puntos y barras", isCorrect: false, rationale: "Los mayas estaban en América y no tuvieron contacto con Europa en esta época." },
+                    { text: "El sistema binario de unos y ceros para ordenadores", isCorrect: false, rationale: "El sistema binario digital moderno se desarrolló mucho después de la Edad Media." },
+                    { text: "Los jeroglíficos numéricos tallados en piedra", isCorrect: false, rationale: "No usaban jeroglíficos egipcios, sino grafías abstractas de origen indio." }
+                ],
+                hint: "Incluye el concepto de 'nada' representado por un círculo vacío."
+            },
+            {
+                id: 22,
+                category: "Avances Culturales",
+                question: "¿Cuál era el juego de mesa preferido de las personas cultas de Al-Ándalus, traído desde Asia?",
+                options: [
+                    { text: "El ajedrez", isCorrect: true, rationale: "Era valorado como un gran ejercicio de táctica mental y se jugaba en carpas y alcázares." },
+                    { text: "El parchís", isCorrect: false, rationale: "El ludo o parchís se popularizó mucho después en Europa occidental." },
+                    { text: "El monopolio", isCorrect: false, rationale: "Es un juego comercial de mesa inventado en el siglo XX." },
+                    { text: "Las damas chinas", isCorrect: false, rationale: "El juego que dominaba los salones ilustrados de la época era el ajedrez persa." }
+                ],
+                hint: "Se juega sobre un tablero cuadriculado de 64 casillas con reyes, torres y peones."
+            },
+            {
+                id: 23,
+                category: "Avances Culturales",
+                question: "¿Cuál de estos platos y alimentos consumidos hoy en día tiene un claro origen andalusí?",
+                options: [
+                    { text: "Las albóndigas, el escabeche, el turrón y los mazapanes", isCorrect: true, rationale: "Los andalusíes utilizaban mucho la almendra, el azúcar refinado y técnicas de vinagre para conservar la carne." },
+                    { text: "La tortilla de patata con cebolla", isCorrect: false, rationale: "No existía en Al-Ándalus porque la patata es de origen americano." },
+                    { text: "La pizza margarita", isCorrect: false, rationale: "El tomate no se conocía y la pizza es una receta italiana posterior." },
+                    { text: "Las hamburguesas con patatas fritas", isCorrect: false, rationale: "Es un menú de comida rápida estadounidense moderno." }
+                ],
+                hint: "Llevan deliciosas especias picadas y dulces de almendra molida con miel."
+            },
+            {
+                id: 24,
+                category: "Avances Culturales",
+                question: "¿Qué costumbre a la hora de comer en la mesa heredamos hoy de la refinada cultura andalusí?",
+                options: [
+                    { text: "Servir los platos en orden: primero, segundo y postre", isCorrect: true, rationale: "Antes se servía todo de golpe en la mesa de forma desordenada. Al-Ándalus introdujo el refinado servicio por tiempos." },
+                    { text: "Comer colgados boca abajo con cuerdas", isCorrect: false, rationale: "No comían boca abajo; lo hacían sobre cómodos divanes y cojines en el suelo." },
+                    { text: "No usar platos y comer directamente del suelo de tierra", isCorrect: false, rationale: "Utilizaban una vajilla de cerámica vidriada muy limpia y sofisticada." },
+                    { text: "Ayunar por completo durante seis meses seguidos", isCorrect: false, rationale: "No ayunaban medio año; tenían el Ramadán de un mes donde comían al caer el sol." }
+                ],
+                hint: "Consiste en no servir la comida toda junta, sino de forma estructurada."
+            },
+            {
+                id: 25,
+                category: "Avances Culturales",
+                question: "¿Qué parte de la mezquita es la torre alta desde donde el almuédano llama a la oración?",
+                options: [
+                    { text: "El minarete o alminar", isCorrect: true, rationale: "Es la alta torre esbelta que servía para que la voz del religioso llegara a toda la ciudad." },
+                    { text: "La sala de oraciones o haram", isCorrect: false, rationale: "Esta sala es el espacio cubierto interior con columnas." },
+                    { text: "El patio de entrada o sahn", isCorrect: false, rationale: "Es el patio abierto donde se sitúan los árboles y la fuente de limpieza." },
+                    { text: "El mihrab", isCorrect: false, rationale: "Es el pequeño nicho decorado que señala la dirección hacia La Meca." }
+                ],
+                hint: "En Sevilla, la famosa Giralda fue el de la gran mezquita almohade."
+            },
+            {
+                id: 26,
+                category: "Avances Culturales",
+                question: "¿Para qué servía la fuente situada en el patio abierto de las mezquitas andalusíes?",
+                options: [
+                    { text: "Para realizar las abluciones (lavarse y purificarse antes de rezar)", isCorrect: true, rationale: "El Islam exige lavar manos, boca, cara y pies antes de entrar a la sala sagrada de columnas." },
+                    { text: "Para criar peces de colores para la comida del califa", isCorrect: false, rationale: "No era una piscifactoría; el uso del agua era sagrado e higiénico." },
+                    { text: "Para que los caballos de los soldados bebieran agua en mitad de la batalla", isCorrect: false, rationale: "Los animales tenían prohibida la entrada al patio sagrado de la mezquita." },
+                    { text: "Para lanzar monedas de bronce y pedir deseos de amor", isCorrect: false, rationale: "No era un pozo de deseos paganos, era una fuente ritual." }
+                ],
+                hint: "Tiene que ver con la pureza ritual y la higiene antes del rezo sagrado."
+            },
+            {
+                id: 27,
+                category: "Al-Ándalus",
+                question: "¿Cuál era la diferencia entre un 'alcázar' y una 'alcazaba' en las fortificaciones andalusíes?",
+                options: [
+                    { text: "El alcázar era el palacio residencial y la alcazaba era el recinto defensivo militar", isCorrect: true, rationale: "El alcázar priorizaba el lujo de los gobernantes, mientras la alcazaba albergaba cuarteles y murallas defensivas." },
+                    { text: "La alcazaba era un barco mercante y el alcázar una muralla", isCorrect: false, rationale: "Ambos eran edificios defensivos terrestres, no barcos marítimos." },
+                    { text: "El alcázar era de madera y la alcazaba era de plástico", isCorrect: false, rationale: "El plástico no existía y ambos se construían con piedra y ladrillo." },
+                    { text: "No había diferencias y son dos palabras distintas para la mezquita", isCorrect: false, rationale: "La mezquita es el templo de oración, completamente distinto de las fortalezas reales." }
+                ],
+                hint: "Uno aloja hermosos jardines y salas de administración; la otra tiene torres de guardia y murallas dentadas."
+            },
+            // Categoria: Sociedad Feudal
+            {
+                id: 28,
+                category: "Sociedad Feudal",
+                question: "¿Cómo se dividía fundamentalmente la sociedad feudal del medievo cristiano?",
+                options: [
+                    { text: "En estamentos: los privilegiados (nobleza y clero) y los no privilegiados (campesinos y artesanos)", isCorrect: true, rationale: "Esta división rígida determinaba que los privilegiados no pagaran impuestos y tuvieran casi todas las tierras." },
+                    { text: "En ricos empresarios industriales y obreros con sindicatos", isCorrect: false, rationale: "Los sindicatos y las industrias no aparecieron hasta el siglo XIX." },
+                    { text: "En ciudadanos con derecho a voto parlamentario directo", isCorrect: false, rationale: "No había elecciones democráticas en los reinos de la época." },
+                    { text: "En agricultores espaciales y científicos de laboratorio", isCorrect: false, rationale: "Los laboratorios científicos modernos y la tecnología espacial no existían." }
+                ],
+                hint: "Los derechos dependían del grupo en el que nacías. Unos guerreadores, otros rezadores, otros labradores."
+            },
+            {
+                id: 29,
+                category: "Sociedad Feudal",
+                question: "¿Quiénes formaban el estamento de los 'privilegiados' y dónde solían habitar?",
+                options: [
+                    { text: "La nobleza y el clero, habitando en castillos y monasterios", isCorrect: true, rationale: "Eran dueños de las tierras feudales y controlaban el poder político, militar y la cultura religiosa." },
+                    { text: "Los campesinos siervos, que habitaban en pequeñas chozas del bosque", isCorrect: false, rationale: "Los siervos eran la base no privilegiada y vivían en humildes casas de madera." },
+                    { text: "Los mercaderes marítimos, que vivían en barcos de lujo", isCorrect: false, rationale: "Los mercaderes no eran el estamento privilegiado feudal dominante del campo." },
+                    { text: "Los bufones de la corte, que dormían en la cocina real", isCorrect: false, rationale: "Los bufones eran sirvientes divertidos pero no tenían privilegios de tierras ni títulos." }
+                ],
+                hint: "Tenían torres almenadas y claustros de piedra para orar."
+            },
+            {
+                id: 30,
+                category: "Sociedad Feudal",
+                question: "¿Qué era el 'feudo' que el rey entregaba a los señores feudales?",
+                options: [
+                    { text: "Una gran extensión de tierras bajo control de un noble o clérigo", isCorrect: true, rationale: "El rey cedía estas tierras para que el noble las gobernase, las defendiese y cobrase sus rentas." },
+                    { text: "Un escudo de metal mágico decorado con oro", isCorrect: false, rationale: "Un feudo es un territorio geográfico, no una pieza de armadura militar." },
+                    { text: "Un impuesto que debían pagar los nobles al papa de Roma", isCorrect: false, rationale: "Los diezmos e impuestos eran dinero o grano, no tierras cedidas por el soberano." },
+                    { text: "El pozo de agua más profundo dentro de las aldeas", isCorrect: false, rationale: "No era un pozo de agua, sino todo el señorío agrícola." }
+                ],
+                hint: "Incluía castillos, bosques, pastos, aldeas y tierras de cultivo."
+            },
+            {
+                id: 31,
+                category: "Sociedad Feudal",
+                question: "¿Cuál era la principal función social que debían cumplir los nobles en el feudo?",
+                options: [
+                    { text: "Guerrear, entrenarse militarmente y defender el territorio", isCorrect: true, rationale: "Los nobles eran caballeros entrenados desde niños para la guerra y para defender sus tierras y vasallos." },
+                    { text: "Copiar manuscritos antiguos a mano en latín", isCorrect: false, rationale: "Esa labor correspondía a los monjes del clero en los monasterios." },
+                    { text: "Arar la tierra de sol a sol con bueyes pesados", isCorrect: false, rationale: "El trabajo físico duro de labranza estaba prohibido para los nobles; lo hacían los campesinos." },
+                    { text: "Vender especias y telas en el mercado semanal", isCorrect: false, rationale: "El comercio era visto como una actividad de plebeyos, no de la nobleza militar." }
+                ],
+                hint: "Usaban pesadas espadas, escudos de hierro y montaban a caballo."
+            },
+            {
+                id: 32,
+                category: "Sociedad Feudal",
+                question: "¿Cómo era la durísima vida diaria de los campesinos no privilegiados en la sociedad feudal?",
+                options: [
+                    { text: "Trabajaban de sol a sol con herramientas muy sencillas y sufrían hambrunas frecuentes", isCorrect: true, rationale: "La productividad era baja, los impuestos del señor eran altos y las malas cosechas traían hambre y peste." },
+                    { text: "Iban a la escuela por las mañanas y jugaban a videojuegos por las tardes", isCorrect: false, rationale: "No existían escuelas públicas ni aparatos de entretenimiento electrónico." },
+                    { text: "Viajaban en vacaciones a playas exóticas en barcos califales", isCorrect: false, rationale: "Los campesinos no tenían vacaciones ni derecho a abandonar el feudo de su señor." },
+                    { text: "Se alimentaban con grandes banquetes de jabalí asado tres veces al día", isCorrect: false, rationale: "La carne de caza mayor estaba reservada a los nobles. Su dieta era pan de centeno, gachas y hortalizas." }
+                ],
+                hint: "Trabajaban la tierra con sus manos sin apenas descanso."
+            },
+            // Categoria: Los Castillos
+            {
+                id: 33,
+                category: "Los Castillos",
+                question: "¿En qué gran torre de los castillos residía el noble señor con su familia y se hacía el juramento de homenaje?",
+                options: [
+                    { text: "La torre del homenaje", isCorrect: true, rationale: "Era la torre principal, más alta y fortificada, símbolo del poder del señor y último refugio en caso de asalto." },
+                    { text: "La torre del campanario", isCorrect: false, rationale: "Esta torre se asocia a iglesias y monasterios para llamar a la oración con campanas." },
+                    { text: "El almacén de grano subterráneo", isCorrect: false, rationale: "El almacén o silo se usaba para conservar el trigo, no para que viviera la familia noble." },
+                    { text: "La herrería del patio de armas", isCorrect: false, rationale: "La herrería era el ruidoso taller donde se forjaban las herraduras de caballos." }
+                ],
+                hint: "Es la estructura defensiva más fuerte del castillo medieval."
+            },
+            {
+                id: 34,
+                category: "Los Castillos",
+                question: "¿Qué es el 'patio de armas' de un castillo medieval y qué actividades se realizaban en él?",
+                options: [
+                    { text: "El espacio central abierto donde se entrenaban los soldados y se celebraban torneos", isCorrect: true, rationale: "Alrededor de este patio se distribuían las dependencias del castillo: establos, herrería y talleres." },
+                    { text: "Un jardín secreto con rosas traídas de Oriente para el califa", isCorrect: false, rationale: "Los jardines exóticos de recreo eran típicos de los alcázares andalusíes, no del austero castillo feudal." },
+                    { text: "La celda húmeda subterránea donde se encerraba a los bandidos", isCorrect: false, rationale: "Eso era la mazmorra o foso de prisioneros." },
+                    { text: "El puente colgante de madera para cruzar el foso", isCorrect: false, rationale: "Esa estructura es el puente levadizo." }
+                ],
+                hint: "Es la gran explanada interior rodeada por la alta muralla de piedra."
+            },
+            {
+                id: 35,
+                category: "Los Castillos",
+                question: "¿Qué foso de agua y sistema levadizo protegían la entrada de un castillo de los ataques enemigos?",
+                options: [
+                    { text: "El foso y el puente levadizo", isCorrect: true, rationale: "Al elevar el puente de madera pesada mediante cadenas, la entrada quedaba sellada y protegida por un foso insalvable." },
+                    { text: "Una rampa de hielo resbaladizo artificial", isCorrect: false, rationale: "No existía tecnología frigorífica para fabricar rampas de hielo en la España medieval caliente." },
+                    { text: "Un laberinto de setos espinosos gigantes", isCorrect: false, rationale: "Los setos no contenían asaltos armados con arietes; hacían falta piedras y agua." },
+                    { text: "Un portal teletransportador mágico", isCorrect: false, rationale: "La magia de teletransporte pertenece a la fantasía, la defensa feudal era puramente física e ingenieril." }
+                ],
+                hint: "Era un canal hondo con agua estancada y un portal de madera con poleas."
+            }
+        ];
+
+        // --- SISTEMA DE PREMIOS Y CASTIGOS MÁGICOS/TEMÁTICOS ---
+        const REWARDS = [
+            { text: "¡Un sabio de la Escuela de Traductores te regala un mapa secreto! Avanzas 2 casillas adicionales.", steps: 2 },
+            { text: "¡Un mago andalusí te concede un salto gigante con su alfombra mágica! Avanzas 2 casillas.", steps: 2 },
+            { text: "¡Has encontrado un atajo por el laberinto de la medina de Córdoba! Avanzas 1 casilla extra.", steps: 1 },
+            { text: "¡El rey feudal te nombra caballero por tu gran sabiduría! Avanzas 2 casillas de honor.", steps: 2 },
+            { text: "¡El señor del castillo te abre el puente levadizo! Avanzas 1 casilla de forma segura.", steps: 1 }
+        ];
+
+        const PUNISHMENTS = [
+            { text: "¡Oh no! Un mago malvado te lanza un hechizo de confusión y te hace retroceder 2 casillas.", steps: -2 },
+            { text: "¡Te has despistado en el zoco curioseando especias! Retrocedes 1 casilla.", steps: -1 },
+            { text: "¡Te ha atrapado una fuerte tormenta de polvo en los campos! Retrocedes 2 casillas.", steps: -2 },
+            { text: "¡Has resbalado y caído en el foso de agua del castillo! Tienes que salir mojado: retrocedes 2 casillas.", steps: -2 },
+            { text: "¡La guardia de la alcazaba te confunde con un espía extranjero! Retrocedes 1 casilla mientras te disculpas.", steps: -1 }
+        ];
+
+        // --- ESTADO GENERAL DEL JUEGO ---
+        let gameState = {
+            playerName: "Aventurero",
+            avatarEmoji: "🛡️",
+            currentTile: 1, // Casilla inicial de 1 a 30
+            correctAnswers: 0,
+            incorrectAnswers: 0,
+            askedQuestionsCount: 0,
+            currentQuestion: null,
+            questionsQueue: [],
+            dieRolled: false
+        };
+
+        // --- MOTOR DE SONIDOS (API DE AUDIO WEB NATIVA) ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playTone(freq, type, duration) {
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) {
+                // El navegador puede bloquear audio si no hay interacción previa, ignorar silenciosamente
+            }
+        }
+
+        function playSound(type) {
+            if (type === 'roll') {
+                playTone(200, 'sine', 0.15);
+                setTimeout(() => playTone(300, 'sine', 0.15), 100);
+            } else if (type === 'correct') {
+                playTone(523.25, 'triangle', 0.2); // C5
+                setTimeout(() => playTone(659.25, 'triangle', 0.2), 150); // E5
+                setTimeout(() => playTone(783.99, 'triangle', 0.4), 300); // G5
+            } else if (type === 'incorrect') {
+                playTone(220, 'sawtooth', 0.3); // A3
+                setTimeout(() => playTone(147, 'sawtooth', 0.5), 200); // D3
+            } else if (type === 'victory') {
+                // Fanfarria corta
+                const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50];
+                notes.forEach((f, i) => {
+                    setTimeout(() => playTone(f, 'sine', 0.3), i * 150);
+                });
+            }
+        }
+
+        // --- INICIALIZACIÓN ---
+        window.onload = function() {
+            generateBoardUI();
+            resetGameQueue();
+        };
+
+        // Mezcla las preguntas aleatoriamente al iniciar
+        function resetGameQueue() {
+            gameState.questionsQueue = [...QUESTIONS_DATABASE].sort(() => Math.random() - 0.5);
+        }
+
+        // Genera visualmente las casillas del tablero
+        function generateBoardUI() {
+            const grid = document.getElementById('board-grid');
+            grid.innerHTML = '';
+            
+            for (let i = 1; i <= 30; i++) {
+                const tile = document.createElement('div');
+                tile.id = `tile-${i}`;
+                tile.className = `relative aspect-square flex flex-col justify-between p-1.5 md:p-2.5 rounded-xl border-2 transition duration-300 text-left cursor-default`;
+                
+                // Color y estilo según el tipo de casilla (Temática)
+                let bgColor = "bg-amber-900/20 border-amber-800/60";
+                let emoji = "⚔️";
+                let tileType = "Feudalismo";
+
+                if (i === 1) {
+                    bgColor = "bg-blue-900/30 border-blue-500/50";
+                    emoji = "🚀";
+                    tileType = "Inicio";
+                } else if (i === 30) {
+                    bgColor = "bg-amber-500/20 border-amber-400 animate-pulse";
+                    emoji = "👑";
+                    tileType = "Castillo";
+                } else if (i % 3 === 0) {
+                    bgColor = "bg-emerald-950/40 border-emerald-700/60";
+                    emoji = "🕌";
+                    tileType = "Al-Ándalus";
+                } else if (i % 3 === 1) {
+                    bgColor = "bg-yellow-950/40 border-yellow-700/60";
+                    emoji = "🏰";
+                    tileType = "Feudalismo";
+                } else {
+                    bgColor = "bg-stone-900/50 border-stone-700/60";
+                    emoji = "📜";
+                    tileType = "Avances";
+                }
+
+                tile.className += ` ${bgColor}`;
+
+                tile.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <span class="text-[10px] md:text-xs font-bold text-amber-500/80">#${i}</span>
+                        <span class="text-xs md:text-sm opacity-60">${emoji}</span>
+                    </div>
+                    <div class="text-[9px] md:text-[10px] font-bold text-amber-200/60 truncate">${tileType}</div>
+                    <!-- Contenedor del avatar del jugador si está aquí -->
+                    <div id="player-container-${i}" class="absolute inset-0 flex items-center justify-center pointer-events-none hidden">
+                        <span class="text-2xl md:text-4xl filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] animate-bounce" id="avatar-icon-${i}">🛡️</span>
+                    </div>
+                `;
+                
+                grid.appendChild(tile);
+            }
+            updatePlayerPositionUI();
+        }
+
+        // Actualiza dónde se pinta el icono del jugador
+        function updatePlayerPositionUI() {
+            for (let i = 1; i <= 30; i++) {
+                const container = document.getElementById(`player-container-${i}`);
+                if (container) {
+                    if (i === gameState.currentTile) {
+                        container.classList.remove('hidden');
+                        document.getElementById(`tile-${i}`).classList.add('ring-4', 'ring-amber-500', 'border-transparent');
+                        document.getElementById(`avatar-icon-${i}`).innerText = gameState.avatarEmoji;
+                    } else {
+                        container.classList.add('hidden');
+                        document.getElementById(`tile-${i}`).classList.remove('ring-4', 'ring-amber-500', 'border-transparent');
+                    }
+                }
+            }
+            document.getElementById('current-position').innerText = gameState.currentTile;
+        }
+
+        // --- CONTROL DE AVATARES ---
+        let selectedName = "Aventurero/a";
+        let selectedEmoji = "🛡️";
+
+        function selectCharacter(role, emoji) {
+            // Desmarcar todos
+            document.querySelectorAll('.character-card').forEach(el => {
+                el.classList.remove('ring-4', 'ring-amber-400', 'bg-amber-800/80');
+            });
+            
+            // Marcar actual
+            event.currentTarget.classList.add('ring-4', 'ring-amber-400', 'bg-amber-800/80');
+            
+            selectedEmoji = emoji;
+            const defaultNames = {
+                'Caballero': 'Sir Galahad',
+                'Princesa': 'Guerrera Urraca',
+                'Maga': 'Maga Alquimista',
+                'Sabio': 'Ibn Sina'
+            };
+            document.getElementById('player-name-input').value = defaultNames[role] || "Viajero";
+        }
+
+        function startGame() {
+            // Audio Context Resume (requerido por navegadores modernos)
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            const inputName = document.getElementById('player-name-input').value.trim();
+            gameState.playerName = inputName || "Héroe sin Nombre";
+            gameState.avatarEmoji = selectedEmoji;
+            
+            document.getElementById('player-name-display').innerText = gameState.playerName;
+            document.getElementById('player-avatar-display').innerText = gameState.avatarEmoji;
+
+            // Ocultar modal de bienvenida
+            document.getElementById('welcome-modal').classList.add('hidden');
+            
+            // Colocar jugador en casilla 1
+            updatePlayerPositionUI();
+            
+            playSound('correct');
+            document.getElementById('game-status-text').innerText = `¡El viaje comienza! Lanza el dado, ${gameState.playerName}.`;
+        }
+
+        // --- LÓGICA DE DADO Y PREGUNTAS ---
+        document.getElementById('roll-btn').onclick = function() {
+            if (gameState.dieRolled) return; // Evitar spam
+
+            playSound('roll');
+            gameState.dieRolled = true;
+            document.getElementById('roll-btn').disabled = true;
+
+            // Roll limitado de 1 a 3 para evitar que pasen de largo el tablero demasiado rápido y disfruten más preguntas
+            const steps = Math.floor(Math.random() * 3) + 1; 
+            
+            let count = 0;
+            const interval = setInterval(() => {
+                const tempRoll = Math.floor(Math.random() * 3) + 1;
+                document.getElementById('roll-btn').innerText = `🎲 ... ${tempRoll} ...`;
+                count++;
+                if (count > 6) {
+                    clearInterval(interval);
+                    document.getElementById('roll-btn').innerText = `🎲 ¡Sacaste un ${steps}!`;
+                    
+                    setTimeout(() => {
+                        movePlayer(steps);
+                    }, 600);
+                }
+            }, 100);
+        };
+
+        function movePlayer(steps) {
+            let target = gameState.currentTile + steps;
+            if (target > 30) {
+                target = 30; // Te paras en la meta
+            }
+            
+            gameState.currentTile = target;
+            updatePlayerPositionUI();
+            
+            document.getElementById('game-status-text').innerText = `Avanzas a la casilla ${gameState.currentTile}. ¡Debes superar el desafío!`;
+
+            setTimeout(() => {
+                triggerQuestion();
+            }, 800);
+        }
+
+        // Obtener una pregunta no repetida o reciclar la cola
+        function getNextQuestion() {
+            if (gameState.questionsQueue.length === 0) {
+                resetGameQueue();
+            }
+            return gameState.questionsQueue.pop();
+        }
+
+        function triggerQuestion() {
+            const q = getNextQuestion();
+            gameState.currentQuestion = q;
+            gameState.askedQuestionsCount++;
+
+            // Elementos del Modal
+            document.getElementById('question-category').innerText = q.category;
+            document.getElementById('question-id-display').innerText = `Pregunta ${gameState.askedQuestionsCount} de 35`;
+            document.getElementById('question-text').innerText = q.question;
+            
+            // Ocultar pista previamente abierta
+            document.getElementById('hint-text').classList.add('hidden');
+            document.getElementById('hint-text').innerText = q.hint;
+
+            // Renderizar Opciones mezcladas
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+
+            const shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
+            shuffledOptions.forEach((option) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-4 rounded-xl border border-amber-600/30 bg-amber-950/20 hover:bg-amber-900/40 text-sm md:text-base font-medium transition duration-150 focus:outline-none focus:ring-2 focus:ring-amber-500 text-amber-100 flex items-center justify-between";
+                btn.innerHTML = `
+                    <span>${option.text}</span>
+                    <span class="text-xs text-amber-500/50">✦</span>
+                `;
+                btn.onclick = () => submitAnswer(option, q);
+                container.appendChild(btn);
+            });
+
+            // Mostrar Modal
+            document.getElementById('question-modal').classList.remove('hidden');
+        }
+
+        function showHint() {
+            document.getElementById('hint-text').classList.remove('hidden');
+        }
+
+        // --- SISTEMA DE CORRECCIÓN, PREMIO Y CASTIGO ---
+        let pendingMove = 0; // Guardará el movimiento del premio o castigo
+        
+        function submitAnswer(option, question) {
+            // Ocultar modal pregunta
+            document.getElementById('question-modal').classList.add('hidden');
+            
+            const isCorrect = option.isCorrect;
+            let effectText = "";
+            
+            // Reiniciar estilo de la tarjeta de feedback
+            const feedbackCard = document.getElementById('feedback-card');
+            feedbackCard.className = "bg-gradient-to-b border-4 rounded-3xl p-6 md:p-8 max-w-md w-full text-center shadow-2xl ";
+
+            if (isCorrect) {
+                playSound('correct');
+                gameState.correctAnswers++;
+                document.getElementById('stats-correct').innerText = gameState.correctAnswers;
+                
+                // Seleccionar Premio Aleatorio
+                const reward = REWARDS[Math.floor(Math.random() * REWARDS.length)];
+                pendingMove = reward.steps;
+                effectText = reward.text;
+                
+                // Estilo Correcto
+                feedbackCard.classList.add('from-emerald-950', 'to-stone-900', 'border-emerald-500');
+                document.getElementById('feedback-icon').innerText = "✨🎉";
+                document.getElementById('feedback-title').innerText = "¡RESPUESTA ACERTADA!";
+                document.getElementById('feedback-title').className = "medieval-font text-2xl font-extrabold text-emerald-300 mb-2";
+                
+                const rewardBox = document.getElementById('feedback-reward-box');
+                rewardBox.className = "mb-6 p-4 rounded-xl font-bold text-sm bg-emerald-900/40 border border-emerald-500/40 text-emerald-300";
+                rewardBox.innerText = effectText;
+
+            } else {
+                playSound('incorrect');
+                gameState.incorrectAnswers++;
+                document.getElementById('stats-incorrect').innerText = gameState.incorrectAnswers;
+                
+                // Seleccionar Castigo Aleatorio
+                const punishment = PUNISHMENTS[Math.floor(Math.random() * PUNISHMENTS.length)];
+                pendingMove = punishment.steps;
+                effectText = punishment.text;
+                
+                // Estilo Incorrecto
+                feedbackCard.classList.add('from-rose-950', 'to-stone-900', 'border-rose-500');
+                document.getElementById('feedback-icon').innerText = "🧙‍♂️⚡";
+                document.getElementById('feedback-title').innerText = "¡RESPUESTA INCORRECTA!";
+                document.getElementById('feedback-title').className = "medieval-font text-2xl font-extrabold text-rose-300 mb-2";
+                
+                const rewardBox = document.getElementById('feedback-reward-box');
+                rewardBox.className = "mb-6 p-4 rounded-xl font-bold text-sm bg-rose-950/40 border border-rose-500/40 text-rose-300";
+                rewardBox.innerText = effectText;
+            }
+
+            // Mostrar explicación (Rationale)
+            document.getElementById('feedback-explanation').innerText = `${option.rationale}`;
+
+            // Actualizar pergamino de estadísticas generales
+            const percent = Math.min(100, Math.round((gameState.askedQuestionsCount / 35) * 100));
+            document.getElementById('stats-progress').innerText = `${gameState.askedQuestionsCount} / 35`;
+            document.getElementById('stats-bar').style.width = `${percent}%`;
+
+            // Mostrar Modal de Feedback
+            document.getElementById('feedback-modal').classList.remove('hidden');
+        }
+
+        // Aplica el premio o castigo en el tablero y avanza el juego
+        function closeFeedbackAndMove() {
+            document.getElementById('feedback-modal').classList.add('hidden');
+            
+            let finalTile = gameState.currentTile + pendingMove;
+            
+            // Limitar límites del tablero (no menos de 1, no más de 30)
+            if (finalTile < 1) finalTile = 1;
+            if (finalTile > 30) finalTile = 30;
+
+            gameState.currentTile = finalTile;
+            updatePlayerPositionUI();
+
+            // Reactivar botón del dado
+            gameState.dieRolled = false;
+            document.getElementById('roll-btn').disabled = false;
+            document.getElementById('roll-btn').innerText = "🎲 Lanzar Dado";
+
+            // Verificar si el jugador llegó a la meta final (Casilla 30)
+            if (gameState.currentTile >= 30) {
+                endGame();
+            } else {
+                document.getElementById('game-status-text').innerText = `Te encuentras en la casilla ${gameState.currentTile}. ¡Vuelve a tirar el dado!`;
+            }
+        }
+
+        // Fin de partida
+        function endGame() {
+            playSound('victory');
+            document.getElementById('final-correct').innerText = gameState.correctAnswers;
+            document.getElementById('final-incorrect').innerText = gameState.incorrectAnswers;
+            document.getElementById('victory-modal').classList.remove('hidden');
+        }
+
+        // Reiniciar todo
+        function restartGame() {
+            gameState = {
+                playerName: "Aventurero",
+                avatarEmoji: "🛡️",
+                currentTile: 1,
+                correctAnswers: 0,
+                incorrectAnswers: 0,
+                askedQuestionsCount: 0,
+                currentQuestion: null,
+                questionsQueue: [],
+                dieRolled: false
+            };
+            
+            resetGameQueue();
+            document.getElementById('stats-correct').innerText = "0";
+            document.getElementById('stats-incorrect').innerText = "0";
+            document.getElementById('stats-progress').innerText = "0 / 35";
+            document.getElementById('stats-bar').style.width = "0%";
+            document.getElementById('victory-modal').classList.add('hidden');
+            
+            // Mostrar modal de bienvenida otra vez
+            document.getElementById('welcome-modal').classList.remove('hidden');
+            generateBoardUI();
+        }
+    </script>
+</body>
+</html>
